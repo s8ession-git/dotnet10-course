@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/01-task-async-await/">
+    <Project Path="01-task-async-await/TaskAsyncAwait.csproj" />
+  </Folder>
+  <Folder Name="/02-async-composition/">
+    <Project Path="02-async-composition/AsyncComposition.csproj" />
+  </Folder>
+</Solution>
