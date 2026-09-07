@@ -1,17 +1,17 @@
-# .NET 10 Course
+# Курс по .NET 10 
 
-My practical work for a 24-week .NET 10 learning roadmap.
+Моя практическая работа для 24-недельного маршрута изучения .NET10
 
-## Progress
+## Прогресс
 
-| Week | Topic | Status |
+| Неделя | Тема | Статус |
 |------|-------|--------|
-| 01 | C# Fundamentals | ✅ Completed |
-| 02 | Collections, Equality, Nullable | ✅ Completed |
-| 03 | OOP | ✅ Completed |
-| 04 | Generics, Delegates, Events, IDisposable | ✅ Completed |
-| 05 | LINQ | ✅ Completed |
-| 06 | Async/Await, Task, Concurrency | 🚧 In Progress |
-| 07 | PostgreSQL / SQL I | ⏳ Planned |
-| 08 | PostgreSQL / SQL II | ⏳ Planned |
+| 01 | C# Fundamentals | ✅ Выполнено |
+| 02 | Collections, Equality, Nullable | ✅ Выполнено |
+| 03 | OOP | ✅ Выполнено |
+| 04 | Generics, Delegates, Events, IDisposable | ✅ Выполнено |
+| 05 | LINQ | ✅ Выполнено |
+| 06 | Async/Await, Task, Concurrency | 🚧 В работе |
+| 07 | PostgreSQL / SQL I | ⏳ Позже |
+| 08 | PostgreSQL / SQL II | ⏳ Позже |
 | ... | ... | ... |
