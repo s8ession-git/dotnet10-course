@@ -1,3 +1,5 @@
+namespace DotnetCourse.Week06.AsyncAwait.Domain;
+
 public sealed class Spacecraft
 {
     public int Id { get; }
@@ -5,12 +7,12 @@ public sealed class Spacecraft
 
     public Spacecraft(int id, string name)
     {
-        ValidataConstructor(id, name);
+        ValidateConstructor(id, name);
         Id = id;
         Name = name;
     }
 
-    private static void ValidataConstructor(int id, string name)
+    private static void ValidateConstructor(int id, string name)
     {
         if (!(id > 0))
             throw new ArgumentOutOfRangeException(nameof(id));

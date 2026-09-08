@@ -1,4 +1,9 @@
+using DotnetCourse.Week06.AsyncAwait.Domain;
+using DomainTelemetry = DotnetCourse.Week06.AsyncAwait.Domain.Telemetry;
+
+namespace DotnetCourse.Week06.AsyncAwait.Application.Telemetry;
+
 public interface ITelemetryService
 {
-    Task<Telemetry> ReceiveTelemetryAsync(Spacecraft spacecraft);
+    Task<DomainTelemetry> ReceiveTelemetryAsync(Spacecraft spacecraft);
 }
