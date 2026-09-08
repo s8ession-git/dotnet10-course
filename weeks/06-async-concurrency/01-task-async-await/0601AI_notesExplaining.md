@@ -3,56 +3,32 @@
 ## Текущее дерево
 
 ```text
-06-async-concurrency/
-├── Week06.slnx
-└── 01-task-async-await/
-    ├── 01-task-async-await.csproj
-    ├── Program.cs
-    ├── 0601_notes.txt
-    ├── 0601AI_notesExplaining.md
-    │
-    ├── Application/
-    │   └── Telemetry/
-    │       ├── ITelemetryLogger.cs
-    │       ├── ITelemetryPresenter.cs
-    │       ├── ITelemetryService.cs
-    │       └── TelemetryScenario.cs
-    │
-    ├── Domain/
-    │   ├── Spacecraft.cs
-    │   └── Telemetry.cs
-    │
-    ├── Infrastructure/
-    │   └── TelemetryService.cs
-    │
-    └── Presentation/
-        ├── ConsoleTelemetryLogger.cs
-        └── ConsoleTelemetryPresenter.cs
+01-task-async-await/
+├── 01-task-async-await.csproj
+├── Program.cs
+├── 0601_notes.txt
+├── 0601AI_notesExplaining.md
+├── Application/
+│   └── Telemetry/
+│       ├── ITelemetryService.cs
+│       └── TelemetryScenario.cs
+├── Domain/
+│   ├── Spacecraft.cs
+│   └── Telemetry.cs
+├── Infrastructure/
+│   └── Telemetry/
+│       └── TelemetryService.cs
+└── Presentation/
+    └── ConsoleTelemetryPresenter.cs
 ```
 
-`Week06.slnx` группирует проекты. Сейчас в нем находится один проект: `01-task-async-await`.
-
-Папки `Application`, `Domain`, `Infrastructure` и `Presentation` являются логическими слоями внутри одного `.csproj`. Это пока не отдельные физические проекты.
-
-## Роли слоев
+## Роли
 
 ### Domain
 
-Содержит основные данные и правила предметной области.
+`Spacecraft` описывает космический корабль и проверяет корректность `Id` и `Name`.
 
-`Spacecraft` описывает космический корабль:
-
-```csharp
-public sealed class Spacecraft
-{
-    public int Id { get; }
-    public string Name { get; }
-}
-```
-
-Конструктор проверяет, что `Id` больше нуля, а имя не пустое.
-
-`Telemetry` описывает результат измерения:
+`Telemetry` хранит результат измерения:
 
 ```csharp
 public sealed record Telemetry(
@@ -61,178 +37,115 @@ public sealed record Telemetry(
     double BatteryPercent);
 ```
 
-Domain не знает о консоли, файлах, базе данных или HTTP.
+Domain не знает о консоли, файлах или базе данных.
 
 ### Application
 
-Содержит сценарии использования и интерфейсы, необходимые этим сценариям.
+`ITelemetryService` задает контракт получения телеметрии.
 
-`TelemetryScenario` выполняет сценарий:
+`TelemetryScenario` содержит сценарий использования:
 
 1. Создает один `Spacecraft`.
 2. Один раз вызывает `ReceiveTelemetryAsync`.
-3. Передает результат presenter-у.
+3. Возвращает полученный `Telemetry`.
 
 ```csharp
-var spacecraft = new Spacecraft(1, "Aurora");
-
-Telemetry telemetry =
-    await telemetryService.ReceiveTelemetryAsync(spacecraft);
-
-presenter.Show(telemetry);
+public async Task<Telemetry> RunAsync()
+{
+    var spacecraft = new Spacecraft(1, "Aurora");
+    return await telemetryService.ReceiveTelemetryAsync(spacecraft);
+}
 ```
 
-Интерфейсы Application:
-
-- `ITelemetryService` описывает получение телеметрии.
-- `ITelemetryLogger` описывает логирование начала и завершения.
-- `ITelemetryPresenter` описывает отображение результата.
-
-Application работает с абстракциями и не знает, используется ли консоль, файл, web-интерфейс или тестовый объект.
+Application не знает, как результат будет показан пользователю.
 
 ### Infrastructure
 
-Содержит техническую реализацию получения данных.
+`Infrastructure/Telemetry/TelemetryService.cs` реализует `ITelemetryService`.
 
-`TelemetryService` реализует `ITelemetryService`. Метод `ReceiveTelemetryAsync`:
-
-1. Проверяет `Spacecraft`.
-2. Сообщает логгеру о начале.
-3. Имитирует асинхронную работу через `Task.Delay`.
-4. Рассчитывает температуру и заряд батареи.
-5. Создает `Telemetry`.
-6. Сообщает логгеру о завершении.
-7. Возвращает результат.
+`ReceiveTelemetryAsync` проверяет корабль, имитирует асинхронную работу, рассчитывает температуру и заряд батареи, затем возвращает `Telemetry`.
 
 ### Presentation
 
-Содержит конкретные способы взаимодействия с пользователем.
-
-- `ConsoleTelemetryLogger` реализует `ITelemetryLogger` и пишет сообщения о начале и завершении в консоль.
-- `ConsoleTelemetryPresenter` реализует `ITelemetryPresenter` и выводит значения температуры и заряда батареи.
+`ConsoleTelemetryPresenter` получает `Telemetry` и выводит `Temperature` и `BatteryPercent` в консоль.
 
 ## Точка входа
 
-`Program.cs` является composition root: местом, где конкретные реализации соединяются с интерфейсами.
+`Program.cs` является composition root. Он соединяет конкретные реализации и запускает сценарий:
 
 ```csharp
-var telemetryLogger = new ConsoleTelemetryLogger();
-var telemetryService = new TelemetryService(telemetryLogger);
-var telemetryScenario = new TelemetryScenario(
-    telemetryService,
-    new ConsoleTelemetryPresenter());
+var telemetryService = new TelemetryService();
+var telemetryScenario = new TelemetryScenario(telemetryService);
+var telemetry = await telemetryScenario.RunAsync();
 
-await telemetryScenario.RunAsync();
+new ConsoleTelemetryPresenter().Show(telemetry);
 ```
 
-`Program.cs` не содержит бизнес-логику. Он только создает зависимости, передает их конструкторам и запускает сценарий.
+В `Program.cs` нет бизнес-логики. Он только создает объекты, передает зависимости и запускает выполнение.
 
-## Pipeline выполнения
+## Pipeline
 
 ```text
 Program.cs
     |
-    | создает ConsoleTelemetryLogger
-    |
     | создает TelemetryService
-    |
-    | создает ConsoleTelemetryPresenter
-    |
     | создает TelemetryScenario
     v
-RunAsync()
+TelemetryScenario.RunAsync()
     |
     | создает Spacecraft
+    | вызывает ITelemetryService.ReceiveTelemetryAsync()
     v
-TelemetryService.ReceiveTelemetryAsync()
-    |
-    | ConsoleTelemetryLogger.Started()
+Infrastructure.TelemetryService
     |
     | Task.Delay()
-    |
-    | создается Telemetry
-    |
-    | ConsoleTelemetryLogger.Completed()
+    | рассчитывает Temperature и BatteryPercent
+    | создает Telemetry
     v
-Telemetry возвращается в TelemetryScenario
+Telemetry возвращается в Program.cs
     |
-    | presenter.Show(telemetry)
+    | ConsoleTelemetryPresenter.Show(telemetry)
     v
-Вывод Temperature и BatteryPercent
+Вывод результата в консоль
 ```
-
-### Mermaid-диаграмма
 
 ```mermaid
 flowchart TD
     Program[Program.cs<br/>Composition Root]
     Scenario[TelemetryScenario<br/>Application]
+    Contract[ITelemetryService<br/>Application]
+    Service[TelemetryService<br/>Infrastructure/Telemetry]
     Spacecraft[Spacecraft<br/>Domain]
-    Service[TelemetryService<br/>Infrastructure]
-    Logger[ConsoleTelemetryLogger<br/>Presentation]
     Telemetry[Telemetry<br/>Domain]
     Presenter[ConsoleTelemetryPresenter<br/>Presentation]
     Console[Console]
 
-    Program -->|создает зависимости| Logger
-    Program -->|создает зависимость| Service
-    Program -->|создает зависимость| Presenter
-    Program -->|запускает| Scenario
-
+    Program -->|создает и запускает| Scenario
+    Program -->|создает| Service
+    Program -->|создает| Presenter
     Scenario -->|создает| Spacecraft
-    Scenario -->|вызывает| Service
-    Service -->|логирует начало/завершение| Logger
+    Scenario -->|использует| Contract
+    Service -.->|реализует| Contract
     Service -->|создает| Telemetry
     Service -->|возвращает| Scenario
-    Scenario -->|передает Telemetry| Presenter
-    Logger --> Console
+    Program -->|передает Telemetry| Presenter
     Presenter --> Console
 ```
 
 ## Направление зависимостей
 
-Логическая схема:
-
 ```text
-Presentation ------┐
-Infrastructure ----+----> Application ----> Domain
-Program -----------┘
+Presentation  --->  Program  --->  Application  --->  Domain
+Infrastructure --->  Application  --->  Domain
 ```
 
-Конкретные зависимости:
+`Application` определяет контракт `ITelemetryService`, а `Infrastructure` предоставляет его реализацию. `Presentation` отвечает только за отображение результата.
 
-```text
-TelemetryScenario
-    зависит от:
-    - ITelemetryService
-    - ITelemetryPresenter
-
-TelemetryService
-    реализует:
-    - ITelemetryService
-    зависит от:
-    - ITelemetryLogger
-
-ConsoleTelemetryPresenter
-    реализует:
-    - ITelemetryPresenter
-
-ConsoleTelemetryLogger
-    реализует:
-    - ITelemetryLogger
-```
-
-Главный принцип:
-
-> Application определяет, что ему нужно, а Infrastructure и Presentation предоставляют конкретную реализацию.
-
-Например, вместо `ConsoleTelemetryPresenter` можно будет передать `JsonTelemetryPresenter`, `FileTelemetryPresenter` или `TestTelemetryPresenter`. Сам `TelemetryScenario` менять не придется.
+Чтобы изменить способ вывода, достаточно заменить `ConsoleTelemetryPresenter` в `Program.cs`. `TelemetryScenario` при этом менять не нужно.
 
 ## Вывод программы
 
 ```text
-Начало получения телеметрии от Aurora
-Завершение получения телеметрии от Aurora
 Temperature: 17,5
 Battery: 93%
 ```
