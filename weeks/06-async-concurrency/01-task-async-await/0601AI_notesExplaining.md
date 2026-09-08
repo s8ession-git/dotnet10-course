@@ -135,11 +135,20 @@ flowchart TD
 ## Направление зависимостей
 
 ```text
-Presentation  --->  Program  --->  Application  --->  Domain
-Infrastructure --->  Application  --->  Domain
+                                 Program
+                             /    |    \
+                            v     v     v
+        Application Infrastructure Presentation
+                 |          |          |
+                 v          |          v
+             Domain <------+-------- Domain
+
+Infrastructure ---> Application
 ```
 
-`Application` определяет контракт `ITelemetryService`, а `Infrastructure` предоставляет его реализацию. `Presentation` отвечает только за отображение результата.
+`Program` является composition root и зависит от конкретных реализаций из `Application`, `Infrastructure` и `Presentation`. `Application` и `Infrastructure` используют модели `Domain`, а `Infrastructure` реализует контракт, объявленный в `Application`.
+
+В этой учебной структуре `Domain` показан с обеих сторон диаграммы только для наглядности: фактически это один и тот же слой с моделями `Spacecraft` и `Telemetry`.
 
 Чтобы изменить способ вывода, достаточно заменить `ConsoleTelemetryPresenter` в `Program.cs`. `TelemetryScenario` при этом менять не нужно.
 
