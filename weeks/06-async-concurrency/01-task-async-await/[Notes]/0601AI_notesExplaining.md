@@ -67,6 +67,10 @@ public async Task<Telemetry> RunAsync()
 
 Application не знает, как результат будет показан пользователю.
 
+Папка `Experiments` содержит небольшие изолированные сценарии для изучения
+разных вариантов работы с `Task` и `await`. `Program.cs` предоставляет для них
+методы-обертки `Run...ExperimentAsync`, а в `Main` выбирается нужный сценарий.
+
 ### Infrastructure
 
 `Infrastructure/Telemetry/TelemetryService.cs` реализует `ITelemetryService`.
@@ -79,17 +83,26 @@ Application не знает, как результат будет показан
 
 ## Точка входа
 
-`Program.cs` является composition root. Он соединяет конкретные реализации и запускает сценарий:
+`Program.cs` является composition root. Он создает сервис и космический корабль,
+запускает выбранный эксперимент, выводит телеметрию и измеряет общее время:
 
 ```csharp
+var stopwatch = Stopwatch.StartNew();
 var telemetryService = new TelemetryService();
-var telemetryScenario = new TelemetryScenario(telemetryService);
-var telemetry = await telemetryScenario.RunAsync();
+var spacecraft = new Spacecraft(1, "Apollo 11");
 
+Telemetry telemetry = await RunBuildTelemetryReportAsync(
+    telemetryService,
+    spacecraft);
 new ConsoleTelemetryPresenter().Show(telemetry);
+
+stopwatch.Stop();
+Console.WriteLine($"Total execution time: {stopwatch.ElapsedMilliseconds} ms");
 ```
 
-В `Program.cs` нет бизнес-логики. Он только создает объекты, передает зависимости и запускает выполнение.
+Чтобы переключить эксперимент, достаточно заменить вызов `RunBuildTelemetryReportAsync`
+на другой метод-обертку, например `RunRegularAwaitExperimentAsync` или
+`RunTaskFromResultExperimentAsync`.
 
 ## Pipeline
 
@@ -97,12 +110,17 @@ new ConsoleTelemetryPresenter().Show(telemetry);
 Program.cs
     |
     | создает TelemetryService
-    | создает TelemetryScenario
+    | создает Spacecraft (Apollo 11)
     v
-TelemetryScenario.RunAsync()
+RunBuildTelemetryReportAsync()
     |
-    | создает Spacecraft
+    | вызывает BuildTelemetryReportAsync.RunAsync()
+    v
+BuildTelemetryReportAsync
+    |
     | вызывает ITelemetryService.ReceiveTelemetryAsync()
+    | выводит полученную Telemetry
+    |
     v
 Infrastructure.TelemetryService
     |
@@ -120,7 +138,7 @@ Telemetry возвращается в Program.cs
 ```mermaid
 flowchart TD
     Program[Program.cs<br/>Composition Root]
-    Scenario[TelemetryScenario<br/>Application]
+    Experiment[BuildTelemetryReportAsync<br/>Experiments]
     Contract[ITelemetryService<br/>Application]
     Service[TelemetryService<br/>Infrastructure/Telemetry]
     Spacecraft[Spacecraft<br/>Domain]
@@ -128,14 +146,14 @@ flowchart TD
     Presenter[ConsoleTelemetryPresenter<br/>Presentation]
     Console[Console]
 
-    Program -->|создает и запускает| Scenario
     Program -->|создает| Service
     Program -->|создает| Presenter
-    Scenario -->|создает| Spacecraft
-    Scenario -->|использует| Contract
+    Program -->|выбирает и запускает| Experiment
+    Experiment -->|получает| Spacecraft
+    Experiment -->|использует| Contract
     Service -.->|реализует| Contract
     Service -->|создает| Telemetry
-    Service -->|возвращает| Scenario
+    Service -->|возвращает| Experiment
     Program -->|передает Telemetry| Presenter
     Presenter --> Console
 ```
@@ -158,13 +176,16 @@ Infrastructure ---> Application
 
 В этой учебной структуре `Domain` показан с обеих сторон диаграммы только для наглядности: фактически это один и тот же слой с моделями `Spacecraft` и `Telemetry`.
 
-Чтобы изменить способ вывода, достаточно заменить `ConsoleTelemetryPresenter` в `Program.cs`. `TelemetryScenario` при этом менять не нужно.
+Чтобы изменить учебный сценарий, достаточно заменить вызов одного из методов
+`Run...ExperimentAsync` в `Program.cs`. Сам `TelemetryService` при этом менять
+не нужно.
 
 ## Вывод программы
 
 ```text
 Temperature: 17,5
 Battery: 93%
+Total execution time: около 1000 ms
 ```
 
 ## Дерево решений для `Task` и `await`

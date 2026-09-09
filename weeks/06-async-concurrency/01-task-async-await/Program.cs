@@ -17,7 +17,8 @@ internal static class Program
 
 		var spacecraft = new Spacecraft(1, "Apollo 11");
 
-		Telemetry telemetry = telemetryService.ReceiveTelemetryAsync(spacecraft).Result;
+		Telemetry telemetry =  await RunBuildTelemetryReportAsync(telemetryService, spacecraft);
+		new ConsoleTelemetryPresenter().Show(telemetry);
 
 		stopwatch.Stop();
 		Console.WriteLine($"Total execution time: {stopwatch.ElapsedMilliseconds} ms");
