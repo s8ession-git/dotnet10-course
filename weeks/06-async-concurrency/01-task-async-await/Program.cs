@@ -17,13 +17,6 @@ internal static class Program
 
 		var spacecraft = new Spacecraft(1, "Apollo 11");
 
-		//Telemetry regularAwaitExperiment = await RunRegularAwaitExperimentAsync(telemetryService, spacecraft);
-		//Telemetry startThenAwaitExperiment = await RunStartThenAwaitExperimentAsync(telemetryService, spacecraft);
-		//Telemetry sequentialAwaitExperiment = await RunSequentialAwaitExperimentAsync(telemetryService, spacecraft, spacecraft);
-		//Telemetry taskStateExperiment = await RunTaskStateExperimentAsync(telemetryService, spacecraft);
-		//string taskFromResultExperiment = await RunTaskFromResultExperimentAsync(telemetryService);
-		//Telemetry blockingVsAsyncExperiment = await RunBlockingVsAsyncExperimentAsync(telemetryService, spacecraft);
-
 		Telemetry telemetry = telemetryService.ReceiveTelemetryAsync(spacecraft).Result;
 
 		stopwatch.Stop();
@@ -53,5 +46,9 @@ internal static class Program
 	private static Task<Telemetry> RunBlockingVsAsyncExperimentAsync(
 		ITelemetryService service, Spacecraft spacecraft) => 
 		BlockingVsAsyncExperiment.RunAsync(service, spacecraft);
+
+	private static Task<Telemetry> RunBuildTelemetryReportAsync(
+		ITelemetryService service, Spacecraft spacecraft) => 
+		BuildTelemetryReportAsync.RunAsync(service, spacecraft);
 
 }

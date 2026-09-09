@@ -12,6 +12,14 @@
 │   └── Telemetry/
 │       ├── ITelemetryService.cs
 │       └── TelemetryScenario.cs
+├── Experiments/
+│   ├── BlockingVsAsyncExperiment.cs
+│   ├── BuildTelemetryReportAsync.cs
+│   ├── RegularAwaitExperiment.cs
+│   ├── SequentialAwaitExperiment.cs
+│   ├── StartThenAwaitExperiment.cs
+│   ├── TaskFromResultExperiment.cs
+│   └── TaskStateExperiment.cs
 ├── Domain/
 │   ├── Spacecraft.cs
 │   └── Telemetry.cs
@@ -158,3 +166,48 @@ Infrastructure ---> Application
 Temperature: 17,5
 Battery: 93%
 ```
+
+## Дерево решений для `Task` и `await`
+
+```text
+Нужно получить результат асинхронной операции?
+├── Нет, результат уже известен прямо сейчас
+│   └── Вернуть Task.FromResult(value)
+│       Пример: TaskFromResultExperiment
+│       Task сразу имеет состояние RanToCompletion.
+│
+└── Да, операция выполняется не сразу
+    ├── Результат нужен сразу после запуска?
+    │   └── Да: await service.ReceiveTelemetryAsync(spacecraft)
+    │       Пример: RegularAwaitExperiment
+    │
+    └── Между запуском и ожиданием есть другая работа?
+        ├── Нет
+        │   └── Обычный await достаточен.
+        │
+        └── Да
+            ├── Нужно выполнить обычную работу до получения результата?
+            │   └── Сначала сохранить Task, выполнить работу, затем await.
+            │       Пример: StartThenAwaitExperiment
+            │
+            └── Нужно выполнить несколько операций?
+                ├── Они независимы?
+                │   └── Запустить несколько Task, затем await результаты.
+                │
+                └── Они должны идти одна за другой?
+                    └── Запускать следующую операцию после await предыдущей.
+                        Пример: SequentialAwaitExperiment
+```
+
+### Диагностика состояния
+
+Если нужно понять, что происходит с операцией, проверить `Task.Status` и
+`Task.IsCompleted` до и после `await`.
+
+Пример: `TaskStateExperiment`.
+
+### Чего избегать
+
+`.Result` и `.Wait()` блокируют текущий поток. Для асинхронного кода следует
+использовать `await`, как показывает `RegularAwaitExperiment`. Сравнение
+блокирующего и асинхронного поведения находится в `BlockingVsAsyncExperiment`.
