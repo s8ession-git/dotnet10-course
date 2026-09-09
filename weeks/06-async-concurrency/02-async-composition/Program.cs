@@ -4,10 +4,11 @@ internal static class Program
 {
 	private static async Task Main()
     {
-        var stopwatch = Stopwatch.StartNew();
-        string result = await RunScenario.RunAsync("2.4.1");
-        Console.WriteLine(result);
-        stopwatch.Stop();
-        Console.WriteLine($"Total execution time: {stopwatch.ElapsedMilliseconds} ms");
+        var deployment = new DeploymentReceiptService();
+        var health = new HealthCheckResultService();
+        var independent = new IndependentService();
+
+        var ConsoleResultPresenter = new ConsoleResultPresenter(deployment, independent, health);
+        await ConsoleResultPresenter.PrintResultAsync("2.4.1");
     }
 }

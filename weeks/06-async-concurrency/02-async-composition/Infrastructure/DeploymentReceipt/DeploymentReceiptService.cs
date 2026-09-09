@@ -1,15 +1,18 @@
 public sealed class DeploymentReceiptService : IDeploymentReceiptService
 {
-    public async Task<DeploymentReceipt> DeployReleaseAsync(string version)
+    public async Task<DeploymentReceipt> DeployReleaseAsync(string version, bool isValidated)
     {
-        ReleasePackage releasePackage = await new ReleasePackageService().DownloadPackageAsync(version);
+        ReleasePackageService releasePackageService = new ReleasePackageService();
+        ReleasePackage releasePackage =
+            isValidated
+                ? await releasePackageService.GetValidatedPackageAsync(version)
+                : await releasePackageService.GetPackageAsync(version);
+
         if (releasePackage is null)
             throw new ArgumentNullException(nameof(releasePackage));
-        
+
         if (releasePackage.SizeBytes <= 0)
-        {
             throw new ArgumentOutOfRangeException(nameof(releasePackage.SizeBytes));
-        }
 
         await Task.Delay(1000);
 

@@ -1,7 +1,10 @@
-public sealed class HealthCheckResultService : IHealthCheckResultAsync
+public sealed class HealthCheckResultService : IHealthCheckResultService
 {
-    public async Task<HealthCheckResult> CheckHealthAsync()
+    public async Task<HealthCheckResult> CheckHealthAsync(DeploymentReceipt deployment)
     {
+        if (deployment is null)
+            throw new ArgumentNullException(nameof(deployment));
+
         bool isHealthy = true;
         int responseTimeMs = 85;
 

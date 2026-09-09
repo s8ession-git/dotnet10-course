@@ -1,4 +1,4 @@
 public interface IDeploymentReceiptService
 {
-    Task<DeploymentReceipt> DeployReleaseAsync(string version);
+    Task<DeploymentReceipt> DeployReleaseAsync(string version, bool isValidated);
 }

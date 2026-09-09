@@ -1,27 +1,38 @@
-public static class RunScenario
+public sealed class RunScenario
 {
-    public static async Task<string> RunAsync(string version)
+    private readonly IDeploymentReceiptService _deployment;
+    private readonly ILoadEnvironmentConfigService _environment;
+    private readonly IHealthCheckResultService _health;
+
+    public RunScenario(
+        IDeploymentReceiptService deployment,
+        ILoadEnvironmentConfigService environment,
+        IHealthCheckResultService health)
     {
-        var deploymentReceiptService = new DeploymentReceiptService();
-        DeploymentReceipt deploymentReceipt = await deploymentReceiptService.DeployReleaseAsync(version);
+        _deployment = deployment;
+        _environment = environment;
+        _health = health;
+    }
 
-        var environmentConfigService = new IndependentService();
-        string environmentResult = await environmentConfigService.LoadEnvironmentConfigAsync();
+    public async Task<string> RunAsync(string version)
+    {
+        var IsValidated = false;
+        DeploymentReceipt deploymentReceipt = await _deployment.DeployReleaseAsync(version, IsValidated);
 
-        var healthCheckResultService = new HealthCheckResultService();
-        HealthCheckResult healthCheckResult = await healthCheckResultService.CheckHealthAsync();
+        string environmentResult = await _environment.LoadEnvironmentConfigAsync();
+
+        HealthCheckResult healthCheckResult = await _health.CheckHealthAsync(deploymentReceipt);
 
         string deploymentReceiptResult = string.IsNullOrWhiteSpace(deploymentReceipt.Version)
             ? "N/A"
-            : $"Successfull (at {deploymentReceipt.DeployedAt})";
+            : $"Successful (at {deploymentReceipt.DeployedAt:dd.MM.yyyy HH:mm:ss})";
 
-        
-        string result = 
-            $"Version: {version} \n" +
-            $"Environment: {environmentResult} \n" +
-            $"Deployment: {deploymentReceiptResult} \n" +
-            $"Health: {(healthCheckResult.IsHealthy ? "OK" : "Unhealthy")} \n" +
-            $"Response Time: {healthCheckResult.responseTimeMs} ms \n";
+        string result =
+            $"Version: {(string.IsNullOrWhiteSpace(version) ? "N/A" : version)}\n" +
+            $"Environment: {(string.IsNullOrWhiteSpace(environmentResult) ? "N/A" : environmentResult)}\n" +
+            $"Deployment: {deploymentReceiptResult}\n" +
+            $"Health: {(healthCheckResult.IsHealthy ? "OK" : "Unhealthy")}\n" +
+            $"Response Time: {healthCheckResult.ResponseTimeMs} ms\n";
 
         return result;
     }

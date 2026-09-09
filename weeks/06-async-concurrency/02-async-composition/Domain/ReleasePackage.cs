@@ -5,12 +5,12 @@ public sealed class ReleasePackage
 
     public ReleasePackage(string version, long sizeBytes)
     {
-        ValidateInitilState(version, sizeBytes);
+        ValidateInitialState(version, sizeBytes);
         Version = version;
         SizeBytes = sizeBytes;
     }
 
-    private static void ValidateInitilState(string version, long sizeBytes)
+    private static void ValidateInitialState(string version, long sizeBytes)
     {
         if (string.IsNullOrWhiteSpace(version))
         {
