@@ -1,15 +1,26 @@
+using DotnetCourse.Week06.AsyncAwait.Application.Telemetry;
+using DotnetCourse.Week06.AsyncAwait.Domain;
+
+
 namespace DotnetCourse.Week06.AsyncAwait.Experiments;
 
 public static class BlockingVsAsyncExperiment
 {
-    public static async Task RunAsync()
+    public static async Task<Telemetry> RunAsync(
+        ITelemetryService service,
+        Spacecraft spacecraft
+    )
     {
+        Task<Telemetry> telemetryTask = service.ReceiveTelemetryAsync(spacecraft);
+        Console.WriteLine("Telemetry request was started.");
+            
         Console.WriteLine("Blocking operation started");
-        Thread.Sleep(300);
+        Thread.Sleep(1000);
         Console.WriteLine("Blocking operation completed");
 
-        Console.WriteLine("Async operation started");
-        await Task.Delay(300);
-        Console.WriteLine("Async operation completed");
+
+        Telemetry telemetry = await telemetryTask;
+        Console.WriteLine("Async operation (Telemetry request) completed.");
+        return telemetry;
     }
 }

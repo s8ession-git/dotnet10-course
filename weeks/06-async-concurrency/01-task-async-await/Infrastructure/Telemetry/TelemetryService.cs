@@ -6,6 +6,11 @@ namespace DotnetCourse.Week06.AsyncAwait.Infrastructure.Telemetry;
 
 public sealed class TelemetryService : ITelemetryService
 {
+    public Task<string> GetStationNameAsync()
+    {
+        return Task.FromResult("Deep Space Network");
+    }
+
     public async Task<DomainTelemetry> ReceiveTelemetryAsync(Spacecraft spacecraft)
     {
         if (spacecraft is null)
