@@ -1,0 +1,11 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "02-async-composition",
+      "type": "dotnet",
+      "request": "launch",
+      "projectPath": "${workspaceFolder}/weeks/06-async-concurrency/02-async-composition/02-async-composition.csproj"
+    }
+  ]
+}
