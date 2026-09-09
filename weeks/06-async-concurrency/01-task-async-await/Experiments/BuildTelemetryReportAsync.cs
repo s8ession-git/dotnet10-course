@@ -5,13 +5,21 @@ namespace DotnetCourse.Week06.AsyncAwait.Experiments;
 
 public static class BuildTelemetryReportAsync
 {
-    public static async Task<Telemetry> RunAsync(
+    public static async Task<string> RunAsync(
         ITelemetryService service,
         Spacecraft spacecraft
     )
     {
-        Telemetry telemetry = await service.ReceiveTelemetryAsync(spacecraft);
-        Console.WriteLine($"Telemetry: {telemetry}");
-        return telemetry;
+        Task<Telemetry> telemetryTask =
+            service.ReceiveTelemetryAsync(spacecraft);
+
+        Telemetry telemetry = await telemetryTask;
+
+        string report =
+            $"Spacecraft {telemetry.SpacecraftId}: " +
+            $"temperature {telemetry.Temperature}, " +
+            $"battery {telemetry.BatteryPercent}%";
+
+        return report;
     }
 }

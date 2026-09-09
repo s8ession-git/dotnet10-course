@@ -81,6 +81,9 @@ Application не знает, как результат будет показан
 
 `ConsoleTelemetryPresenter` получает `Telemetry` и выводит `Temperature` и `BatteryPercent` в консоль.
 
+Для эксперимента `BuildTelemetryReportAsync` presenter также принимает
+`Task<string>`, ожидает его и выводит готовый строковый отчёт через `GetAndShow`.
+
 ## Точка входа
 
 `Program.cs` является composition root. Он создает сервис и космический корабль,
@@ -118,8 +121,10 @@ RunBuildTelemetryReportAsync()
     v
 BuildTelemetryReportAsync
     |
-    | вызывает ITelemetryService.ReceiveTelemetryAsync()
-    | выводит полученную Telemetry
+    | получает Task<Telemetry>
+    | await преобразует его в Telemetry
+    | формирует string report
+    | возвращает Task<string>
     |
     v
 Infrastructure.TelemetryService
@@ -128,9 +133,9 @@ Infrastructure.TelemetryService
     | рассчитывает Temperature и BatteryPercent
     | создает Telemetry
     v
-Telemetry возвращается в Program.cs
+Task<string> возвращается в Program.cs
     |
-    | ConsoleTelemetryPresenter.Show(telemetry)
+    | ConsoleTelemetryPresenter.GetAndShow(finalTask)
     v
 Вывод результата в консоль
 ```
@@ -183,8 +188,8 @@ Infrastructure ---> Application
 ## Вывод программы
 
 ```text
-Temperature: 17,5
-Battery: 93%
+Task status: WaitingForActivation
+Result: Spacecraft 1: temperature 17,5, battery 93%
 Total execution time: около 1000 ms
 ```
 

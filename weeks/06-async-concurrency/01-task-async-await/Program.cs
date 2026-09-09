@@ -13,12 +13,13 @@ internal static class Program
 	{
 		var stopwatch = Stopwatch.StartNew();
 
+		var spacecraft = new Spacecraft(1, "Apollo 11");
 		var telemetryService = new TelemetryService();
 
-		var spacecraft = new Spacecraft(1, "Apollo 11");
-
-		Telemetry telemetry =  await RunBuildTelemetryReportAsync(telemetryService, spacecraft);
-		new ConsoleTelemetryPresenter().Show(telemetry);
+		Task<string> finalTask = BuildTelemetryReportAsync.RunAsync(
+			telemetryService,
+			spacecraft);
+		await new ConsoleTelemetryPresenter().GetAndShow(finalTask);
 
 		stopwatch.Stop();
 		Console.WriteLine($"Total execution time: {stopwatch.ElapsedMilliseconds} ms");
@@ -48,7 +49,7 @@ internal static class Program
 		ITelemetryService service, Spacecraft spacecraft) => 
 		BlockingVsAsyncExperiment.RunAsync(service, spacecraft);
 
-	private static Task<Telemetry> RunBuildTelemetryReportAsync(
+	private static Task<string> RunBuildTelemetryReportAsync(
 		ITelemetryService service, Spacecraft spacecraft) => 
 		BuildTelemetryReportAsync.RunAsync(service, spacecraft);
 
