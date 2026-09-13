@@ -5,5 +5,10 @@
   <Folder Name="/02-async-composition/">
     <Project Path="02-async-composition/02-async-composition.csproj" />
   </Folder>
-  <Project Path="03-task-concurrency/03-task-concurrency.csproj" />
+  <Folder Name="/03-task-concurrency/">
+    <Project Path="03-task-concurrency/03-task-concurrency.csproj" />
+  </Folder>
+  <Folder Name="/04-async-exceptions/">
+    <Project Path="04-async-exceptions/04-async-exceptions.csproj" />
+  </Folder>
 </Solution>

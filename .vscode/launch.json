@@ -2,10 +2,32 @@
   "version": "0.3.0",
   "configurations": [
     {
-      "name": "03-task-concurrency",
-      "type": "dotnet",
+      "name": "01 - task async await",
+      "type": "coreclr",
       "request": "launch",
-      "projectPath": "${workspaceFolder}/weeks/06-async-concurrency/03-task-concurrency/03-task-concurrency.csproj"
+      "program": "${workspaceFolder}/weeks/06-async-concurrency/01-task-async-await/bin/Debug/net10.0/01-task-async-await.dll",
+      "cwd": "${workspaceFolder}/weeks/06-async-concurrency/01-task-async-await"
+    },
+    {
+      "name": "02 - async composition",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/weeks/06-async-concurrency/02-async-composition/bin/Debug/net10.0/02-async-composition.dll",
+      "cwd": "${workspaceFolder}/weeks/06-async-concurrency/02-async-composition"
+    },
+    {
+      "name": "03 - task concurrency",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/weeks/06-async-concurrency/03-task-concurrency/bin/Debug/net10.0/03-task-concurrency.dll",
+      "cwd": "${workspaceFolder}/weeks/06-async-concurrency/03-task-concurrency"
+    },
+    {
+      "name": "04 - async exceptions",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/weeks/06-async-concurrency/04-async-exceptions/bin/Debug/net10.0/04-async-exceptions.dll",
+      "cwd": "${workspaceFolder}/weeks/06-async-concurrency/04-async-exceptions"
     }
   ]
 }
