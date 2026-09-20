@@ -13,6 +13,9 @@ OrdinaryCompletionPresenter completionPresenter = new(scenario);
 ManualCancellationPresenter cancellationPresenter = new(scenario);
 ManualCancellationStatusPresenter cancellationStatusPresenter = new(scenario);
 CancelAfterPresenter cancellationAfterPresenter = new(scenario);
+PropagationTokenPresenter propagationTokenPresenter = new(scenario);
 
-await cancellationAfterPresenter.ShowAsync(mediaFileA, 1000);
+using CancellationTokenSource cts = new CancellationTokenSource();
+await propagationTokenPresenter.ShowAsync(mediaFileA, cts.Token);
+
 
