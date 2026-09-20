@@ -20,8 +20,7 @@ public sealed class MainScenario
         int maxObservedConcurrencyLevel = 0;
         object syncRoot = new();
 
-
-        Task<DocumentProcessingResult>[] tasks= documents.Select(async documentFile =>
+        Task<DocumentProcessingResult>[] tasks = documents.Select(async documentFile =>
         {
             await semaphore.WaitAsync(cancellationToken);
             int currentActive = Interlocked.Increment(ref activeCount);
