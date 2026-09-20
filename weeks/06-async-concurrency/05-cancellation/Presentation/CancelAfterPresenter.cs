@@ -1,6 +1,5 @@
 public sealed class CancelAfterPresenter
 {
-    private int CanciellationTokenTime { get; init; }
     private readonly MainScenario scenarioE;
 
     public CancelAfterPresenter(MainScenario scenario)
