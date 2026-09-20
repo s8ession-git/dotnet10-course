@@ -21,9 +21,4 @@ Task task = propagationTokenPresenter.ShowAsync(mediaFileA, cts.Token);
 await Task.Delay(1000);
 cts.Cancel();
 
-try { await task; }
-catch (OperationCanceledException)
-{
-    Console.WriteLine("Operation cancelled.");
-}
-
+await task;
