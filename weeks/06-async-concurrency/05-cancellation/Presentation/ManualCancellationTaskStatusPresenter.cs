@@ -18,7 +18,7 @@ public sealed class ManualCancellationTaskStatusPresenter
         try { await task; }
         catch (OperationCanceledException)
         {
-            Console.WriteLine("Operation cancelled at ThrowIfCancellationRequested().");
+           Console.WriteLine("Operation cancelled.");
         }
 
         Console.WriteLine($"Task status: {task.Status}");

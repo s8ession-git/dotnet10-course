@@ -31,7 +31,7 @@ public sealed class MainScenario
             cancellationToken.ThrowIfCancellationRequested();
 
             int frameDelay = 100;
-            await Task.Delay(frameDelay, cancellationToken);
+            await Task.Delay(frameDelay);
             Console.WriteLine($"Processed frame {frame + 1}/10");
         }
 
