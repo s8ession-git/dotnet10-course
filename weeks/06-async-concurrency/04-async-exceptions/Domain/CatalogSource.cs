@@ -1,24 +1,24 @@
 public sealed record CatalogSource
 {
-    public string SourceName { get; init; } = default!;
+    public string Name { get; init; }
     public int DelayMs { get; init; }
     public bool ShouldFail { get; init; }
-    public int RecordsCount { get; init; }
+    public int TotalItemsCount { get; init; }
 
-    public CatalogSource(string sourceName, int delayMs, bool shouldFail, int recordsCount)
+    public CatalogSource(string name, int delayMs, bool shouldFail, int totalItemsCount)
     {
-        ValidateInitialization(sourceName, delayMs, recordsCount);
-        SourceName = sourceName;
+        ValidateInitialization(name, delayMs, totalItemsCount);
+        Name = name;
         DelayMs = delayMs;
         ShouldFail = shouldFail;
-        RecordsCount = recordsCount;
+        TotalItemsCount = totalItemsCount;
     }
 
-    private static void ValidateInitialization(string sourceName, int delayMs, int recordsCount)
+    private static void ValidateInitialization(string name, int delayMs, int totalItemsCount)
     {
-        if (string.IsNullOrWhiteSpace(sourceName))
+        if (string.IsNullOrWhiteSpace(name))
         {
-            throw new ArgumentException("Source name cannot be null or whitespace.", nameof(sourceName));
+            throw new ArgumentException("Source name cannot be null or whitespace.", nameof(name));
         }
 
         if (delayMs < 0)
@@ -26,9 +26,9 @@ public sealed record CatalogSource
             throw new ArgumentOutOfRangeException(nameof(delayMs), "Delay cannot be negative.");
         }
 
-        if (recordsCount < 0)
+        if (totalItemsCount < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(recordsCount), "Records count cannot be negative.");
+            throw new ArgumentOutOfRangeException(nameof(totalItemsCount), "Records count cannot be negative.");
         }
     }
 }

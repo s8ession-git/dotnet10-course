@@ -1,25 +1,25 @@
 public sealed record CatalogSnapshot
 {
-    public string SourceName { get; init; } = default!;
-    public int ItemsCount { get; init; }
+    public string Name { get; init; }
+    public int TotalItemsCount { get; init; }
 
-    public CatalogSnapshot(string sourceName, int itemsCount)
+    public CatalogSnapshot(string name, int totalItemsCount)
     {
-        ValidateInitialization(sourceName, itemsCount);
-        SourceName = sourceName;
-        ItemsCount = itemsCount;
+        ValidateInitialization(name, totalItemsCount);
+        Name = name;
+        TotalItemsCount = totalItemsCount;
     }
 
-    private static void ValidateInitialization(string sourceName, int itemsCount)
+    private void ValidateInitialization(string name, int totalItemsCount)
     {
-        if (string.IsNullOrWhiteSpace(sourceName))
+        if (string.IsNullOrWhiteSpace(name))
         {
-            throw new ArgumentException("Source name cannot be null or whitespace.", nameof(sourceName));
+            throw new ArgumentException("Source name cannot be null or whitespace.", nameof(name));
         }
 
-        if (itemsCount < 0)
+        if (totalItemsCount < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(itemsCount), "Items count cannot be negative.");
+            throw new ArgumentOutOfRangeException(nameof(totalItemsCount), "Records count cannot be negative.");
         }
     }
 }

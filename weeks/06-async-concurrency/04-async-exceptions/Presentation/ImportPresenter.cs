@@ -1,8 +1,8 @@
 public sealed class ImportPresenter
 {
-    private readonly CatalogImportScenario scenario;
+    private readonly IScenario scenario;
 
-    public ImportPresenter(CatalogImportScenario scenario)
+    public ImportPresenter(IScenario scenario)
     {
         this.scenario = scenario ?? throw new ArgumentNullException(nameof(scenario));
     }
@@ -13,12 +13,13 @@ public sealed class ImportPresenter
         {
             try
             {
-                CatalogSnapshot snapshot = await scenario.RunAsync(source);
-                Console.WriteLine($"{source.SourceName} -> {source.DelayMs} ms -> {snapshot.ItemsCount} records");
+                CatalogSnapshot snapshot = await scenario.ImportAsync(source);
+                Console.WriteLine($"{source.Name} -> {source.DelayMs} ms -> {snapshot.TotalItemsCount} records");
             }
-            catch (CatalogSourceException exception)
+            catch (CatalogImportException exception)
             {
-                Console.WriteLine($"Import failed for {source.SourceName}: {exception.Message}");
+                Console.WriteLine($"{exception.GetType().Name}");
+                Console.WriteLine($"InnerException: {exception.InnerException?.GetType().Name}");
             }
         }
     }
