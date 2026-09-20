@@ -13,6 +13,8 @@ public sealed class MainScenario
 
     public async Task<MediaProcessingResult> ProcessAsync(MediaFile mediaFile, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(mediaFile);
+        
         await analyzer.AnalyzeAsync(mediaFile, cancellationToken);
         await transcoder.TranscodeAsync(mediaFile, cancellationToken);
         await thumbnailGenerator.GenerateThumbnailAsync(mediaFile, cancellationToken);

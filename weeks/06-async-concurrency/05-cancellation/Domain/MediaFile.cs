@@ -10,7 +10,7 @@ public sealed record MediaFile
         DurationSeconds = durationSeconds;
     }
 
-    private void ValidateInitialization(string name, int durationSeconds)
+    private static void ValidateInitialization(string name, int durationSeconds)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
