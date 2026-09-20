@@ -12,5 +12,7 @@ MainScenarioPresenter presenter = new(scenario);
 OrdinaryCompletionPresenter completionPresenter = new(scenario);
 ManualCancellationPresenter cancellationPresenter = new(scenario);
 ManualCancellationStatusPresenter cancellationStatusPresenter = new(scenario);
+CancelAfterPresenter cancellationAfterPresenter = new(scenario);
 
-await cancellationStatusPresenter.ShowAsync(mediaFileA);
+await cancellationAfterPresenter.ShowAsync(mediaFileB, 1000);
+

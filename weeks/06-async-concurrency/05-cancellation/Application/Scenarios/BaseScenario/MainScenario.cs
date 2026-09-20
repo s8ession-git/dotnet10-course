@@ -37,4 +37,16 @@ public sealed class MainScenario
 
         return new MediaProcessingResult(mediaFile.Name, true);
     }
+
+    public async Task<MediaProcessingResult> ProcessSomeAsync(MediaFile mediaFile, int cancellationTokenTime)
+    {
+        if (cancellationTokenTime < 0) throw new ArgumentOutOfRangeException(nameof(cancellationTokenTime), "Time cannot be negative.");
+        using CancellationTokenSource cts = new CancellationTokenSource();
+        cts.CancelAfter(cancellationTokenTime);
+        await analyzer.AnalyzeAsync(mediaFile, cts.Token);
+        await transcoder.TranscodeAsync(mediaFile, cts.Token);
+        await thumbnailGenerator.GenerateThumbnailAsync(mediaFile, cts.Token);
+
+        return new MediaProcessingResult(mediaFile.Name, true);
+    }
 }
