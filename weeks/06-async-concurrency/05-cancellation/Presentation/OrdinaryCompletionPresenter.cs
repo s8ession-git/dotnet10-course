@@ -12,12 +12,11 @@ public sealed class OrdinaryCompletionPresenter
     public async Task ShowAsync(MediaFile mediaFile)
     {
         Stopwatch stopwatch = Stopwatch.StartNew();
-
         Task<MediaProcessingResult> task = experimentA.ProcessAsync(mediaFile, CancellationToken.None);
-
         MediaProcessingResult result = await task;
-        Console.WriteLine($"Elapsed: {stopwatch.ElapsedMilliseconds} ms");
         stopwatch.Stop();
+        
+        Console.WriteLine($"Elapsed: {stopwatch.ElapsedMilliseconds} ms");
         Console.WriteLine($"Status: {task.Status}");
         Console.WriteLine($"IsCompleted: {task.IsCompleted}");
         Console.WriteLine($"IsCanceled: {task.IsCanceled}");

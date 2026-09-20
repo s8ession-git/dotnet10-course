@@ -12,9 +12,4 @@ public sealed class MainScenarioPresenter
         MediaProcessingResult result = await scenario.ProcessAsync(mediaFile, cancellationToken);
         Console.WriteLine($"{result.Name} -> {result.IsProcessed}");
     }
-
-    public async Task<MediaProcessingResult> ProcessAsync(MediaFile mediaFile, CancellationToken cancellationToken)
-    {
-        return await scenario.ProcessAsync(mediaFile, cancellationToken);
-    }
 }
