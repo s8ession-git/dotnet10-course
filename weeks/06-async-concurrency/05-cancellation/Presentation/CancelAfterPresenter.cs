@@ -10,8 +10,10 @@ public sealed class CancelAfterPresenter
 
     public async Task ShowAsync(MediaFile mediaFile, int cancellationTokenTime)
     {
+        using CancellationTokenSource cts = new CancellationTokenSource();
+        cts.CancelAfter(cancellationTokenTime);
 
-        Task<MediaProcessingResult> task = scenarioE.ProcessSomeAsync(mediaFile, cancellationTokenTime);
+        Task<MediaProcessingResult> task = scenarioE.ProcessAsync(mediaFile, cts.Token);
 
         try { await task; }
         catch (OperationCanceledException)
