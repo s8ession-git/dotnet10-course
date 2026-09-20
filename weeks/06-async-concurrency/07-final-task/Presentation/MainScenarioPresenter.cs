@@ -26,9 +26,9 @@ public sealed class MainScenarioPresenter
         }
     }
 
-    public async Task ShowAsyncNoSemaphore(IReadOnlyCollection<DocumentFile> documents, int maxConcurrencyLevel, CancellationToken cancellationToken)
+    public async Task ShowAsyncNoSemaphore(IReadOnlyCollection<DocumentFile> documents, CancellationToken cancellationToken)
     {
-        BatchProcessingReport report = await scenario.ProcessAllNoSemaphoreAsync(documents, maxConcurrencyLevel, cancellationToken);
+        BatchProcessingReport report = await scenario.ProcessAllNoSemaphoreAsync(documents, cancellationToken);
 
         Console.WriteLine($"Total: {report.TotalCount}");
         Console.WriteLine($"Completed: {report.CompletedCount}");

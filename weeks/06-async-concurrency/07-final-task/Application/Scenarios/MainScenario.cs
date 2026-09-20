@@ -53,11 +53,9 @@ public sealed class MainScenario
 
         public async Task<BatchProcessingReport> ProcessAllNoSemaphoreAsync(
         IReadOnlyCollection<DocumentFile> documents, 
-        int maxConcurrencyLevel, 
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(documents);
-        if (maxConcurrencyLevel <= 0) throw new ArgumentOutOfRangeException(nameof(maxConcurrencyLevel), "Max concurrency level cannot be less than or equal to zero.");
 
         int activeCount = 0;
         int maxObservedConcurrencyLevel = 0;

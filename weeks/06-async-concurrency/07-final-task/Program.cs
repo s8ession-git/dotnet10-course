@@ -23,7 +23,7 @@ DocumentFile document5 = new("document-e.pdf", 500, 600, 700);
 documentListA.AddRange(document1, document2, document3, document4, document5);
 documentListB.AddRange(document1, document2Fail, document3, document4Fail, document5);
 documentListC.AddRange(document1Long, document2Long, document3Long, document4);
-documentListD.AddRange(document1, document1Long, document2, document2Fail, document2Long, document3, document3Long, document4, document4Fail, document5);
+documentListD.AddRange(document1, document1Long, document2, document2Long, document3, document3Long, document4, document5);
 
 IReadOnlyCollection<DocumentFile> documentsA = documentListA;
 IReadOnlyCollection<DocumentFile> documentsB = documentListB;
@@ -75,8 +75,5 @@ Console.WriteLine($"IsCanceled: {experimentC.IsCanceled}");
 Console.WriteLine($"IsFaulted: {experimentC.IsFaulted}");
 */
 
-Task experimentCleanD = presenter.ShowAsync(documentsD, 3, CancellationToken.None);
-Task experimentDirtyD = presenter.ShowAsyncNoSemaphore(documentsD, 3, CancellationToken.None);
-
-await experimentDirtyD;
-await experimentCleanD;
+await presenter.ShowAsyncNoSemaphore(documentsD, CancellationToken.None);
+await presenter.ShowAsync(documentsD, 3, CancellationToken.None);
