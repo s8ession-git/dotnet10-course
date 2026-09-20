@@ -16,9 +16,9 @@ public sealed class ConcurrencyLoggingPresenter
         Console.WriteLine($"Max concurrency: {report.MaxObservedConcurrencyLevel}");
     }
 
-    public async Task ShowUnsafeAsync(IReadOnlyCollection<ImageFile> images, int maxConcurrencyLevel, CancellationToken cancellationToken)
+    public async Task ShowUnboundedAsync(IReadOnlyCollection<ImageFile> images, CancellationToken cancellationToken)
     {
-        ProcessingReport report = await scenario.RunAllUnsafeAsync(images, maxConcurrencyLevel, cancellationToken);
+        ProcessingReport report = await scenario.RunAllUnboundedAsync(images, cancellationToken);
 
         Console.WriteLine($"Total: {report.TotalCount}");
         Console.WriteLine($"Processed: {report.ProcessedCount}");
