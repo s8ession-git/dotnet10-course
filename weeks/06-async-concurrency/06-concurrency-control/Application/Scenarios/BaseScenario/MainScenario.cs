@@ -7,7 +7,36 @@ public sealed class MainScenario
         this.imageProcessor = imageProcessor ?? throw new ArgumentNullException(nameof(imageProcessor));
     }
 
-     public async Task<ProcessingReport> RunAllAsync(IReadOnlyCollection<ImageFile> images, int maxConcurrencyLevel, CancellationToken cancellationToken)
+    public async Task<ProcessingUnsafeReport> RunAllUnsafeAsync(IReadOnlyCollection<ImageFile> images, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(images);
+
+        int activeCount = 0;
+        int processedCount = 0;
+
+        Task[] tasks = images
+            .Select(async image =>
+            {
+                int currentActive = Interlocked.Increment(ref activeCount);
+
+                try
+                {
+                    await imageProcessor.ProcessAsync(image, cancellationToken);
+                    processedCount++;
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref activeCount);
+                }
+            })
+            .ToArray();
+
+        await Task.WhenAll(tasks);
+
+        return new ProcessingUnsafeReport(images.Count, processedCount);
+    }
+
+    public async Task<ProcessingReport> RunAllAsync(IReadOnlyCollection<ImageFile> images, int maxConcurrencyLevel, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(images);
         if (maxConcurrencyLevel <= 0) throw new ArgumentOutOfRangeException(nameof(maxConcurrencyLevel), "Max concurrency level cannot be less than or equal to zero.");

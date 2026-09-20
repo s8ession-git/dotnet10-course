@@ -1,0 +1,1 @@
+public sealed record ProcessingUnsafeReport(int ExpectedCount, int ActualCount);
