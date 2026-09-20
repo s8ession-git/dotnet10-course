@@ -1,2 +1,2 @@
-﻿ExperimentExceptionBeforeAwaitScenario scenario = new();
+﻿ExperimentWhenAnyScenario scenario = new();
 await scenario.RunAsync();

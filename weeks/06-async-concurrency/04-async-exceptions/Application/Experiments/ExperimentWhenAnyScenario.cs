@@ -29,6 +29,19 @@ public sealed class ExperimentWhenAnyScenario
             Console.WriteLine($"Winner Exception: {exception.Message}");
         }
 
+        try
+        {
+            await Task.WhenAll(alphaTask, betaTask, gammaTask);
+        }
+        catch
+        {
+            Console.WriteLine("Then the remaining tasks complete later.");
+        }
+
+        Console.WriteLine($"Alpha -> {alphaTask.Status}");
+        Console.WriteLine($"Beta -> {betaTask.Status}");
+        Console.WriteLine($"Gamma -> {gammaTask.Status}");
+
         stopwatch.Stop();
         Console.WriteLine($"Elapsed: {stopwatch.ElapsedMilliseconds} ms");
     }

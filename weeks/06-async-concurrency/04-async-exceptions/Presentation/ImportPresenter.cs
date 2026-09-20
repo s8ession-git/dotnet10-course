@@ -21,6 +21,10 @@ public sealed class ImportPresenter
                 Console.WriteLine($"{exception.GetType().Name}");
                 Console.WriteLine($"InnerException: {exception.InnerException?.GetType().Name}");
             }
+            catch (CatalogSourceException exception)
+            {
+                Console.WriteLine($"Import failed for {source.Name}: {exception.Message}");
+            }
         }
     }
 }
