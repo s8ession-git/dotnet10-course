@@ -1,3 +1,5 @@
+using System.Reflection.Metadata;
+
 public sealed class MainScenario
 {
     private readonly IParseDocument parseDocument;
@@ -17,41 +19,39 @@ public sealed class MainScenario
 
         using SemaphoreSlim semaphore = new(maxConcurrencyLevel);
         int activeCount = 0;
-        int processedCount = 0;
         int maxObservedConcurrencyLevel = 0;
         object syncRoot = new();
 
-        List<DocumentProcessingResult> results = new();
 
-        Task[] tasks = documents
-            .Select(async documentFile =>
+        Task<DocumentProcessingResult>[] tasks= documents.Select(async documentFile =>
+        {
+            await semaphore.WaitAsync(cancellationToken);
+            int currentActive = Interlocked.Increment(ref activeCount);
+
+            lock (syncRoot)
             {
-                await semaphore.WaitAsync(cancellationToken);
-                int currentActive = Interlocked.Increment(ref activeCount);
-
-                lock (syncRoot)
+                if (currentActive > maxObservedConcurrencyLevel)
                 {
-                    if (currentActive > maxObservedConcurrencyLevel)
-                    {
-                        maxObservedConcurrencyLevel = currentActive;
-                    }
+                    maxObservedConcurrencyLevel = currentActive;
                 }
-                Task<DocumentProcessingResult> parseTask = parseDocument.ParseAsync(documentFile, cancellationToken);
+            }
+            try
+            {
+                return await parseDocument.ParseAsync(documentFile, cancellationToken);
+            }
+            catch (Exception exception)
+            {
+                return new DocumentProcessingResult(documentFile.Name, Status.Failed, exception.Message);
+            }
+            finally
+            {
+                Interlocked.Decrement(ref activeCount);
+                semaphore.Release();
+            }
+        }).ToArray();
 
-                try
-                {
-                    Interlocked.Increment(ref processedCount);
-                }
-                finally
-                {
-                    results.Add(await parseTask);
-                    Interlocked.Decrement(ref activeCount);
-                    semaphore.Release();
-                }
-            })
-            .ToArray();
+        DocumentProcessingResult[] results = await Task.WhenAll(tasks);
 
-        await Task.WhenAll(tasks);
         int completedCount = results.Count(result => result.Status == Status.Completed);
         int failedCount = results.Count(result => result.Status == Status.Failed);
 
