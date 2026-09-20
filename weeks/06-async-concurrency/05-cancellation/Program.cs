@@ -7,10 +7,9 @@ MainAnalyzer analyzer = new();
 MainThumbnailGenerator thumbnailGenerator = new();
 
 MainScenario scenario = new(transcoder, analyzer, thumbnailGenerator);
-OrdinaryCompletionExperiment experimentA = new(transcoder, analyzer, thumbnailGenerator);
 
 MainScenarioPresenter presenter = new(scenario);
-OrdinaryCompletionPresenter completionPresenter = new(experimentA);
+OrdinaryCompletionPresenter completionPresenter = new(scenario);
 
 await completionPresenter.ShowAsync(mediaFileA);
 
