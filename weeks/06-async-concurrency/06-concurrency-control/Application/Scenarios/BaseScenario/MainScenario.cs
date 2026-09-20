@@ -10,28 +10,36 @@ public sealed class MainScenario
      public async Task<ProcessingReport> RunAllAsync(IReadOnlyCollection<ImageFile> images, int maxConcurrencyLevel, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(images);
+        if (maxConcurrencyLevel <= 0) throw new ArgumentOutOfRangeException(nameof(maxConcurrencyLevel), "Max concurrency level cannot be less than or equal to zero.");
 
         SemaphoreSlim semaphore = new(maxConcurrencyLevel);
         int activeCount = 0;
-        int currentActive = 0;
         int processedCount = 0;
-        int updatedActive = 0;
+        int maxObservedConcurrencyLevel = 0;
+        object syncRoot = new();
 
         Task[] tasks = images
             .Select(async image =>
             {
                 await semaphore.WaitAsync(cancellationToken);
+                int currentActive = Interlocked.Increment(ref activeCount);
 
-                currentActive = Interlocked.Increment(ref activeCount);
+                lock (syncRoot)
+                {
+                    if (currentActive > maxObservedConcurrencyLevel)
+                    {
+                        maxObservedConcurrencyLevel = currentActive;
+                    }
+                }
 
                 try
                 {
                     await imageProcessor.ProcessAsync(image, cancellationToken);
+                    processedCount = Interlocked.Increment(ref processedCount);
                 }
                 finally
                 {
-                    updatedActive = Interlocked.Decrement(ref activeCount);
-                    processedCount++;
+                    int updatedActive = Interlocked.Decrement(ref activeCount);
                     semaphore.Release();
                 }
             })
@@ -39,7 +47,7 @@ public sealed class MainScenario
 
         await Task.WhenAll(tasks);
 
-        return new ProcessingReport(images.Count, processedCount, maxConcurrencyLevel);
+        return new ProcessingReport(images.Count, processedCount, maxObservedConcurrencyLevel);
     }
 
 }
