@@ -38,7 +38,7 @@ Console.WriteLine($"IsFaulted: {experimentA.IsFaulted}");
 Task experimentB = presenter.ShowAsync(documentsB, 3, CancellationToken.None);
 await experimentB;
 
-Console.WriteLine($"Status: {experimentA.Status}");
-Console.WriteLine($"IsCompleted: {experimentA.IsCompleted}");
-Console.WriteLine($"IsCanceled: {experimentA.IsCanceled}");
-Console.WriteLine($"IsFaulted: {experimentA.IsFaulted}");
+Console.WriteLine($"Status: {experimentB.Status}");
+Console.WriteLine($"IsCompleted: {experimentB.IsCompleted}");
+Console.WriteLine($"IsCanceled: {experimentB.IsCanceled}");
+Console.WriteLine($"IsFaulted: {experimentB.IsFaulted}");
