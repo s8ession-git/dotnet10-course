@@ -49,5 +49,43 @@ public sealed class MainScenario
 
         return new ProcessingReport(images.Count, processedCount, maxObservedConcurrencyLevel);
     }
+ public async Task<ProcessingReport> RunAllUnsafeAsync(IReadOnlyCollection<ImageFile> images, int maxConcurrencyLevel, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(images);
+        if (maxConcurrencyLevel <= 0) throw new ArgumentOutOfRangeException(nameof(maxConcurrencyLevel), "Max concurrency level cannot be less than or equal to zero.");
 
+        int activeCount = 0;
+        int processedCount = 0;
+        int maxObservedConcurrencyLevel = 0;
+        object syncRoot = new();
+
+        Task[] tasks = images
+            .Select(async image =>
+            {
+                int currentActive = Interlocked.Increment(ref activeCount);
+
+                lock (syncRoot)
+                {
+                    if (currentActive > maxObservedConcurrencyLevel)
+                    {
+                        maxObservedConcurrencyLevel = currentActive;
+                    }
+                }
+
+                try
+                {
+                    await imageProcessor.ProcessAsync(image, cancellationToken);
+                    Interlocked.Increment(ref processedCount);
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref activeCount);
+                }
+            })
+            .ToArray();
+
+        await Task.WhenAll(tasks);
+
+        return new ProcessingReport(images.Count, processedCount, maxObservedConcurrencyLevel);
+    }
 }

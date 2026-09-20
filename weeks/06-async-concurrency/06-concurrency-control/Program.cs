@@ -18,3 +18,4 @@ ConcurrencyLoggingPresenter presenter = new(scenario);
 
 using CancellationTokenSource cts = new CancellationTokenSource();
 await presenter.ShowAsync(images, 3, cts.Token);
+await presenter.ShowUnsafeAsync(images, 3, cts.Token);
