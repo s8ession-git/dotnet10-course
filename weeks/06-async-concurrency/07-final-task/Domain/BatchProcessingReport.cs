@@ -37,5 +37,7 @@ public sealed record BatchProcessingReport
         {
             throw new ArgumentOutOfRangeException(nameof(maxObservedConcurrencyLevel), "Max observed concurrency level cannot be negative.");
         }
+
+        ArgumentNullException.ThrowIfNull(results);
     }
 }

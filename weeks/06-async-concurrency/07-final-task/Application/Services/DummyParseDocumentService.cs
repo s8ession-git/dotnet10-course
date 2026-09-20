@@ -20,16 +20,15 @@ public sealed class DummyParseDocumentService : IParseDocument
             if (documentFile.ShouldFail) throw new ValidationException("Document validation failed.");
             
         
-            Task validationTask = validator.ValidateAsync(documentFile, cancellationToken);
-            await validationTask;
-
-            Task extractionTask = extractor.ExtractAsync(documentFile, cancellationToken);
-            await extractionTask;
-
-            Task indexationTask = indexer.IndexAsync(documentFile, cancellationToken);
-            await indexationTask;
+            await validator.ValidateAsync(documentFile, cancellationToken);
+            await extractor.ExtractAsync(documentFile, cancellationToken);
+            await indexer.IndexAsync(documentFile, cancellationToken);
 
             return new DocumentProcessingResult(documentFile.Name, Status.Completed);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
         }
         catch (Exception exception)
         {

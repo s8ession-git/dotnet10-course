@@ -1,5 +1,3 @@
-using System.Reflection.Metadata;
-
 public sealed class MainScenario
 {
     private readonly IParseDocument parseDocument;
@@ -38,10 +36,6 @@ public sealed class MainScenario
             try
             {
                 return await parseDocument.ParseAsync(documentFile, cancellationToken);
-            }
-            catch (Exception exception)
-            {
-                return new DocumentProcessingResult(documentFile.Name, Status.Failed, exception.Message);
             }
             finally
             {
