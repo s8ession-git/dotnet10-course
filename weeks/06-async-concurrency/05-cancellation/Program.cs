@@ -17,7 +17,7 @@ PropagationTokenPresenter propagationTokenPresenter = new(scenario);
 ExtraScenarioPresenter extraScenarioPresenter = new(scenario);
 
 using CancellationTokenSource cts = new CancellationTokenSource();
-Task task = extraScenarioPresenter.ShowAsync(cts);
+Task task = extraScenarioPresenter.ShowAsync(cts.Token);
 await Task.Delay(100);
 cts.Cancel();
 

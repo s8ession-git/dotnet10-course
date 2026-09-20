@@ -7,9 +7,9 @@ public sealed class ExtraScenarioPresenter
         scenarioG = scenario ?? throw new ArgumentNullException(nameof(scenario));
     }
 
-    public async Task ShowAsync(CancellationTokenSource cts)
+    public async Task ShowAsync(CancellationToken cancellationToken)
     {
-        Task task = scenarioG.ProcessWithCancellationToken(cts.Token);
+        Task task = scenarioG.ProcessWithCancellationToken(cancellationToken);
         await task;
     }
 }
