@@ -14,11 +14,11 @@ ManualCancellationPresenter cancellationPresenter = new(scenario);
 ManualCancellationStatusPresenter cancellationStatusPresenter = new(scenario);
 CancelAfterPresenter cancellationAfterPresenter = new(scenario);
 PropagationTokenPresenter propagationTokenPresenter = new(scenario);
+ExtraScenarioPresenter extraScenarioPresenter = new(scenario);
 
 using CancellationTokenSource cts = new CancellationTokenSource();
-Task task = propagationTokenPresenter.ShowAsync(mediaFileA, cts.Token);
-
-await Task.Delay(1000);
+Task task = extraScenarioPresenter.ShowAsync(cts);
+await Task.Delay(100);
 cts.Cancel();
 
 await task;

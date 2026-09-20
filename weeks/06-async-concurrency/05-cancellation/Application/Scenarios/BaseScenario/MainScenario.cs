@@ -37,4 +37,10 @@ public sealed class MainScenario
 
         return new MediaProcessingResult(mediaFile.Name, true);
     }
+
+    public async Task ProcessWithCancellationToken(CancellationToken cancellationToken)
+    {
+        await Task.Delay(1000);
+        Console.WriteLine("Processed.");
+    }
 }
