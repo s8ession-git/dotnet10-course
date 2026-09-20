@@ -11,14 +11,11 @@ public sealed class MainScenario
     {
         ArgumentNullException.ThrowIfNull(images);
 
-        int activeCount = 0;
         int processedCount = 0;
 
         Task[] tasks = images
             .Select(async image =>
             {
-                int currentActive = Interlocked.Increment(ref activeCount);
-
                 try
                 {
                     await imageProcessor.ProcessAsync(image, cancellationToken);
@@ -26,7 +23,6 @@ public sealed class MainScenario
                 }
                 finally
                 {
-                    Interlocked.Decrement(ref activeCount);
                 }
             })
             .ToArray();
