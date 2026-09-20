@@ -16,14 +16,8 @@ public sealed class MainScenario
         Task[] tasks = images
             .Select(async image =>
             {
-                try
-                {
-                    await imageProcessor.ProcessAsync(image, cancellationToken);
-                    processedCount++;
-                }
-                finally
-                {
-                }
+                await imageProcessor.ProcessAsync(image, cancellationToken);
+                processedCount++;
             })
             .ToArray();
 
