@@ -11,6 +11,6 @@ MainScenario scenario = new(transcoder, analyzer, thumbnailGenerator);
 MainScenarioPresenter presenter = new(scenario);
 OrdinaryCompletionPresenter completionPresenter = new(scenario);
 ManualCancellationPresenter cancellationPresenter = new(scenario);
-ManualCancellationTaskStatusPresenter cancellationTaskStatusPresenter = new(scenario);
+ManualCancellationStatusPresenter cancellationStatusPresenter = new(scenario);
 
-await cancellationTaskStatusPresenter.ShowAsync(mediaFileA);
+await cancellationStatusPresenter.ShowAsync(mediaFileA);

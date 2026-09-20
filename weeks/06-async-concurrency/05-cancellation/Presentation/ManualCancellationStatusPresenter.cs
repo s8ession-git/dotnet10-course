@@ -1,21 +1,24 @@
-public sealed class ManualCancellationTaskStatusPresenter
+public sealed class ManualCancellationStatusPresenter
 {
-    private readonly MainScenario scenarioC;
+    private readonly MainScenario scenarioD;
 
-    public ManualCancellationTaskStatusPresenter(MainScenario scenario)
+    public ManualCancellationStatusPresenter(MainScenario scenario)
     {
-        scenarioC = scenario ?? throw new ArgumentNullException(nameof(scenario));
+        scenarioD = scenario ?? throw new ArgumentNullException(nameof(scenario));
     }
 
     public async Task ShowAsync(MediaFile mediaFile)
     {
         using CancellationTokenSource cts = new CancellationTokenSource();
-        Task<MediaProcessingResult> task = scenarioC.ProcessAsync(mediaFile, cts.Token);
+        Task<MediaProcessingResult> task = scenarioD.ProcessFramesAsync(mediaFile, cts.Token);
 
         await Task.Delay(300);
         cts.Cancel();
 
-        try { await task; }
+        try
+        {
+            await task;
+        }
         catch (OperationCanceledException)
         {
             Console.WriteLine("Operation cancelled at ThrowIfCancellationRequested().");

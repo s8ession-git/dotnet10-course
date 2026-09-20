@@ -21,4 +21,20 @@ public sealed class MainScenario
 
         return new MediaProcessingResult(mediaFile.Name, true);
     }
+
+    public async Task<MediaProcessingResult> ProcessFramesAsync(MediaFile mediaFile, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(mediaFile);
+
+        for (int frame = 0; frame < 10; frame++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            int frameDelay = 100;
+            await Task.Delay(frameDelay, cancellationToken);
+            Console.WriteLine($"Processed frame {frame + 1}/10");
+        }
+
+        return new MediaProcessingResult(mediaFile.Name, true);
+    }
 }
