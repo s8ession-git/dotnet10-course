@@ -9,7 +9,7 @@ MediaFile mediaFileA = new("video-a.mp4", 10);
 MediaFile mediaFileB = new("video-b.mp4", 20);
 MediaFile mediaFileC = new("video-c.mp4", 30);
 
-CancellationTokenSource cts = new();
+using CancellationTokenSource cts = new CancellationTokenSource();
 Task task = presenter.ShowAsync(mediaFileA, cts.Token);
 
 //cts.Cancel();
