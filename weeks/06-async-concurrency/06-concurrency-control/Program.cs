@@ -14,7 +14,7 @@
 
 MainImageProcessor imageProcessor = new();
 MainScenario scenario = new(imageProcessor);
-ConcurrencyLoggingPresenter presenter = new(imageProcessor);
+ConcurrencyLoggingPresenter presenter = new(scenario);
 
 using CancellationTokenSource cts = new CancellationTokenSource();
 await presenter.ShowAsync(images, 3, cts.Token);
