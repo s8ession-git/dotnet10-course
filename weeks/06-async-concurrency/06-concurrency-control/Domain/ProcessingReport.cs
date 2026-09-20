@@ -1,0 +1,1 @@
+public sealed record ProcessingReport(int totalCount, int processedCount, int maxObservedConcurrencyLevel);
