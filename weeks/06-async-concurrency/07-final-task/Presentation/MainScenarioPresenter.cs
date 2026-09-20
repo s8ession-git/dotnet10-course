@@ -25,4 +25,23 @@ public sealed class MainScenarioPresenter
             }
         }
     }
+
+    public async Task ShowAsyncNoSemaphore(IReadOnlyCollection<DocumentFile> documents, int maxConcurrencyLevel, CancellationToken cancellationToken)
+    {
+        BatchProcessingReport report = await scenario.ProcessAllNoSemaphoreAsync(documents, maxConcurrencyLevel, cancellationToken);
+
+        Console.WriteLine($"Total: {report.TotalCount}");
+        Console.WriteLine($"Completed: {report.CompletedCount}");
+        Console.WriteLine($"Failed: {report.FailedCount}");
+        Console.WriteLine($"Max concurrency: {report.MaxObservedConcurrencyLevel}");
+
+        foreach (DocumentProcessingResult result in report.Results)
+        {
+            Console.WriteLine($"{result.DocumentName} -> {result.Status}");
+            if (result.Status == Status.Failed)
+            {
+                Console.WriteLine($"Error: {result.ErrorMessage}");
+            }
+        }
+    }
 }
