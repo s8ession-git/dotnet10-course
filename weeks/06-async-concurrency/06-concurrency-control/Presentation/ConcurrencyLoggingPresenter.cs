@@ -11,8 +11,8 @@ public sealed class ConcurrencyLoggingPresenter
     {
         ProcessingReport report = await scenario.RunAllAsync(images, maxConcurrencyLevel, cancellationToken);
 
-        Console.WriteLine($"Total: {report.totalCount}");
-        Console.WriteLine($"Processed: {report.processedCount}");
-        Console.WriteLine($"Max concurrency: {report.maxObservedConcurrencyLevel}");
+        Console.WriteLine($"Total: {report.TotalCount}");
+        Console.WriteLine($"Processed: {report.ProcessedCount}");
+        Console.WriteLine($"Max concurrency: {report.MaxObservedConcurrencyLevel}");
     }
 }
