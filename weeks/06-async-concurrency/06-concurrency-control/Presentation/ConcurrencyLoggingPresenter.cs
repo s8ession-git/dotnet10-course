@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 public sealed class ConcurrencyLoggingPresenter
 {
     private readonly MainScenario scenario;

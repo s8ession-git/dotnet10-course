@@ -12,7 +12,7 @@ public sealed class MainScenario
         ArgumentNullException.ThrowIfNull(images);
         if (maxConcurrencyLevel <= 0) throw new ArgumentOutOfRangeException(nameof(maxConcurrencyLevel), "Max concurrency level cannot be less than or equal to zero.");
 
-        SemaphoreSlim semaphore = new(maxConcurrencyLevel);
+        using SemaphoreSlim semaphore = new(maxConcurrencyLevel);
         int activeCount = 0;
         int processedCount = 0;
         int maxObservedConcurrencyLevel = 0;
@@ -35,11 +35,11 @@ public sealed class MainScenario
                 try
                 {
                     await imageProcessor.ProcessAsync(image, cancellationToken);
-                    processedCount = Interlocked.Increment(ref processedCount);
+                    Interlocked.Increment(ref processedCount);
                 }
                 finally
                 {
-                    int updatedActive = Interlocked.Decrement(ref activeCount);
+                    Interlocked.Decrement(ref activeCount);
                     semaphore.Release();
                 }
             })
