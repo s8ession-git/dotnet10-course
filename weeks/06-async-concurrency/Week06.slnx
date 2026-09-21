@@ -11,4 +11,11 @@
   <Folder Name="/04-async-exceptions/">
     <Project Path="04-async-exceptions/04-async-exceptions.csproj" />
   </Folder>
+  <Folder Name="/05-cancellation/">
+    <Project Path="05-cancellation/05-cancellation.csproj" />
+  </Folder>
+  <Folder Name="/06-concurrency-control/">
+    <Project Path="06-concurrency-control/06-concurrency-control.csproj" />
+  </Folder>
+  <Project Path="07-final-task/07-final-task.csproj" />
 </Solution>

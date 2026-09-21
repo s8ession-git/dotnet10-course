@@ -1,6 +1,7 @@
 {
-  "version": "0.4.0",
+  "version": "0.6.0",
   "configurations": [
+    
     {
       "name": "01 - task async await",
       "type": "coreclr",
@@ -28,6 +29,20 @@
       "request": "launch",
       "program": "${workspaceFolder}/weeks/06-async-concurrency/04-async-exceptions/bin/Debug/net10.0/04-async-exceptions.dll",
       "cwd": "${workspaceFolder}/weeks/06-async-concurrency/04-async-exceptions"
+    },
+    {
+      "name": "05 - cancellation",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/weeks/06-async-concurrency/05-cancellation/bin/Debug/net10.0/05-cancellation.dll",
+      "cwd": "${workspaceFolder}/weeks/06-async-concurrency/05-cancellation"
+    },
+    {
+      "name": "06 - concurrency control",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/weeks/06-async-concurrency/06-concurrency-control/bin/Debug/net10.0/06-concurrency-control.dll",
+      "cwd": "${workspaceFolder}/weeks/06-async-concurrency/06-concurrency-control"
     }
   ]
 }
