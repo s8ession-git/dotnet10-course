@@ -28,7 +28,7 @@ select title, price, price * 2 as price_for_two_tickets
 from events;
 
 -- 8
-select id, display_name || '<' || email || '>' as customer_label 
+select id, display_name || ' <' || email || '>' as customer_label 
 from customers;
 
 -- 9
