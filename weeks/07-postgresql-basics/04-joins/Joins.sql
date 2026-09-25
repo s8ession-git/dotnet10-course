@@ -20,11 +20,13 @@ select b.id booking_id, c.display_name customer_name, e.title event_title, e.sta
 from bookings b 
 join customers c on c.id = b.customer_id
 join booking_items bi on bi.booking_id = b.id
-join events e on e.id = bi.event_id;
+join events e on e.id = bi.event_id
+ORDER BY b.id, e.id;
 
 -- 4
 select c.id customer_id, c.display_name, b.id booking_id, b.status booking_status  
-from customers c left join bookings b on c.id = b.customer_id;
+from customers c left join bookings b on c.id = b.customer_id
+ORDER BY c.id, b.id;
 
 -- 5
 select * from customers c 
@@ -40,13 +42,22 @@ select c.* from customers c left join bookings b on c.id = b.customer_id where b
 select c.* from customers c left join bookings b on c.id = b.customer_id where b.status = 'confirmed';
 
 -- 8
-select b.id booking_id, c.display_name customer_name, e.title event_title, bi.ticket_count, bi.unit_price, bi.ticket_count * bi.unit_price line_total
-from bookings b 
-join customers c on c.id = b.customer_id
-join booking_items bi on bi.booking_id = b.id
-join events e on e.id = bi.event_id
-where b.status = 'confirmed'
-order by e.starts_at, b.id;
+SELECT
+    b.id AS booking_id,
+    c.display_name AS customer_name,
+    e.title AS event_title,
+    e.starts_at AS event_starts_at,
+    bi.ticket_count,
+    bi.unit_price
+FROM bookings AS b
+JOIN customers AS c
+    ON c.id = b.customer_id
+JOIN booking_items AS bi
+    ON bi.booking_id = b.id
+JOIN events AS e
+    ON e.id = bi.event_id
+WHERE b.status = 'confirmed'
+ORDER BY e.starts_at, b.id;
 
 
 -- 9
