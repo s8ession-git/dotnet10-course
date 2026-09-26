@@ -46,40 +46,35 @@ select * from bookings;
 -- 2
 begin;
 do $$
+declare
+	v_booking_id bigint := 1002;
+	v_expected_status text := 'pending';
+	v_new_status text := 'confirmed';
+	v_affected_rows bigint;
 begin
-	declare
-		v_booking_id_init bigint := 1002;
-		v_booking_id bigint;
-		v_expected_status text := 'pending';
-		v_new_status text := 'confirmed';
-		v_affected_rows bigint;
-	begin
-		update bookings set status = v_new_status 
-		where id in (select id from bookings where status = v_expected_status)
-		returning id into v_booking_id;
-		GET DIAGNOSTICS v_affected_rows = ROW_COUNT;
-		if v_affected_rows = 0 then
-			raise exception 'Бронь % не подтверждена: она отсутствует или уже не pending', v_booking_id;
-		end if;
-		raise notice 'Изменено бронирований: %', v_affected_rows;
-	end; 
-	
-	declare
-		v_booking_id_init bigint := 1002;
-		v_booking_id bigint;
-		v_expected_status text := 'pending';
-		v_new_status text := 'confirmed';
-		v_affected_rows bigint;
-	begin
-		update bookings set status = v_new_status 
-		where id in (select id from bookings where status = v_expected_status)
-		returning id into v_booking_id;
-		GET DIAGNOSTICS v_affected_rows = ROW_COUNT;
-		if v_affected_rows = 0 then
-			raise exception 'Бронь % не подтверждена: она отсутствует или уже не pending', v_booking_id;
-		end if;
-		raise notice 'Изменено бронирований: %', v_affected_rows;
-	end;
+	update bookings set status = v_new_status 
+	where id = v_booking_id and status = v_expected_status;
+	GET DIAGNOSTICS v_affected_rows = ROW_COUNT;
+	if v_affected_rows = 0 then
+		raise exception 'Бронь % не подтверждена: она отсутствует или уже не pending', v_booking_id;
+	end if;
+	raise notice 'Изменено бронирований: %', v_affected_rows;
+end; 
+$$;
+do $$
+declare
+	v_booking_id bigint := 1002;
+	v_expected_status text := 'pending';
+	v_new_status text := 'confirmed';
+	v_affected_rows bigint;
+begin
+	update bookings set status = v_new_status 
+	where id = v_booking_id and status = v_expected_status;
+	GET DIAGNOSTICS v_affected_rows = ROW_COUNT;
+	if v_affected_rows = 0 then
+		raise exception 'Бронь % не подтверждена: она отсутствует или уже не pending', v_booking_id;
+	end if;
+	raise notice 'Изменено бронирований: %', v_affected_rows;
 end;
 $$;
 rollback;
