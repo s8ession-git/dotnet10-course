@@ -44,20 +44,21 @@ confirmed_bookings as
 ),
 customer_totals as
 (
-	select cb.customer_id, sum(bi.booking_id * bi.ticket_count) as customer_totals  
+	select cb.customer_id, sum(bi.unit_price * bi.ticket_count) as confirmed_total 
 	from booking_items bi join confirmed_bookings cb on bi.booking_id = cb.id
 	group by cb.customer_id 
 )
-select ct.customer_id, c.display_name, ct.customer_totals 
+select c.id customer_id, c.display_name, coalesce(ct.confirmed_total, 0) as confirmed_total
 from customer_totals ct
-join customers c on ct.customer_id = c.id;
+right join customers c on ct.customer_id = c.id
+ORDER BY confirmed_total DESC, customer_id ASC;
 
 -- 5: Бронирования дороже среднего
 with booking_totals as
 (
-	select bi.booking_id, sum(bi.ticket_count * bi.unit_price) as booking_total
-	from booking_items bi 
-	group by bi.booking_id 
+	select b.id booking_id, sum(bi.ticket_count * bi.unit_price) as booking_total
+	from booking_items bi right join bookings b on b.id=bi.booking_id 
+	group by b.id
 )
 select bt.booking_id, bt.booking_total 
 from booking_totals bt
