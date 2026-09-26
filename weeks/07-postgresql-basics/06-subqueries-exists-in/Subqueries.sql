@@ -1,5 +1,5 @@
 -- 1
-select id, title, price 
+select id event_id, title, price 
 from events 
 where price > (select avg(price) from events)
 order by price desc, id asc;
@@ -55,5 +55,6 @@ order by 2 desc, 1 asc;
 select c.id customer_id, c.display_name
 from customers c
 where 
-exists (select 1 from bookings b where b.customer_id = c.id and b.status = 'confirmed') and 
-not exists (select 1 from booking_items bi join bookings b on b.id = bi.booking_id where b.customer_id = c.id);
+exists (select 1 from bookings b where b.customer_id = c.id) and 
+not exists (select 1 from bookings b where b.customer_id = c.id and b.status = 'confirmed')
+order by 1;
