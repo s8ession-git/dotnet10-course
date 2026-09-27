@@ -17,7 +17,7 @@ begin
 	raise notice 'Всего записей: %', v_counter;
 	-- result: 5
 end;
-$$
+$$;
 
 select count(*) from bookings; 
 -- result: 5
@@ -49,7 +49,7 @@ begin
 	raise notice 'Всего: %', v_total_confirmed_bookings;
 	close cur_bookings;
 end;
-$$
+$$;
 
 -- 3
 do
@@ -76,7 +76,7 @@ begin
 	raise notice 'Всего записей: %', v_total;
 	close cur_bookings;
 end;
-$$
+$$;
 
 -- 4
 select * from events; 
