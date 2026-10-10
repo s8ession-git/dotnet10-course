@@ -7,8 +7,8 @@ declare
 	v_event_id bigint := 1005; -- Legacy Systems Evening
 	v_ticket_count int := 5; 
 	v_selected_event_price numeric(12, 2);
-	v_selected_booking_id int;
-	v_total_changed_rows int;
+	v_selected_booking_id bigint;
+	v_total_changed_rows bigint;
 begin
 	-- 1
 	if not exists (select 1 from customers where id = v_customer_id) then
